@@ -7,7 +7,7 @@ Using a TBBFS - Two bit breadth first search it is possible to
 walk through all possible pancakes stacks and then finding the maximum branch.
 Ideas taken from: https://www.aaai.org/Papers/AAAI/2008/AAAI08-050.pdf
 
- * Typical run.
+Typical run.
  * Pancake 11: vertexes=39916800 chunks=4 threads=4 memory usage 9 MB
  * LEVEL 0 NODES=1
  * LEVEL 1 NODES=10
