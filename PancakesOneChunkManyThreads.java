@@ -370,31 +370,29 @@ class PancakesOneChunkManyThreads
 	    	// ALLOCATE ARRAY FOR ALL POSSIBLE STACKS OF PANCAKES.
 	    	// 
 	    	long vertexes = factorial(pancakeLength);
-	    	for(int tries=0; tries<10 && buffer == null; tries++) {
-		    	if(NUMBER_OF_BYTES_ALLOWED >= vertexes) {
-		    		BYTES_IN_MEMORY = vertexes;
-		    	} else if(vertexes % NUMBER_OF_BYTES_ALLOWED != 0){
-		    		// must be a multiple of vertexes so we can calculate chunks.
-		    		int chunks = (int)(vertexes / NUMBER_OF_BYTES_ALLOWED);
-		    		BYTES_IN_MEMORY = (long)(vertexes / (chunks + 1));
-		    	} else {
-		    		BYTES_IN_MEMORY = NUMBER_OF_BYTES_ALLOWED;
-		    	}
-		    	
-		    	if(BYTES_IN_MEMORY > 0xFFFFFFFFFFL) {
-		    		throw new RuntimeException("Need to increase child size");
-		    	}
-		    	if(pancakeLength > 16) {
-		    		throw new RuntimeException("Need to increase internal pancake format (long)");
-		    	}
-		    	
-		    	numberOfChunks = (int) (vertexes / BYTES_IN_MEMORY);
-	    		try {
-	    			buffer = new ByteArray64(BYTES_IN_MEMORY);
-	    		} catch(OutOfMemoryError o) {
-	    			NUMBER_OF_BYTES_ALLOWED -= BYTES_IN_MEMORY / numberOfChunks;
-	    		}
+	    	if(NUMBER_OF_BYTES_ALLOWED >= vertexes) {
+	    		BYTES_IN_MEMORY = vertexes;
+	    	} else if(vertexes % NUMBER_OF_BYTES_ALLOWED != 0){
+	    		// must be a multiple of vertexes so we can calculate chunks.
+	    		int chunks = (int)(vertexes / NUMBER_OF_BYTES_ALLOWED);
+	    		BYTES_IN_MEMORY = (long)(vertexes / (chunks + 1));
+	    	} else {
+	    		BYTES_IN_MEMORY = NUMBER_OF_BYTES_ALLOWED;
 	    	}
+	    	
+	    	if(BYTES_IN_MEMORY > 0xFFFFFFFFFFL) {
+	    		throw new RuntimeException("Need to increase child size");
+	    	}
+	    	if(pancakeLength > 16) {
+	    		throw new RuntimeException("Need to increase internal pancake format (long)");
+	    	}
+	    	
+	    	numberOfChunks = (int) (vertexes / BYTES_IN_MEMORY);
+    		try {
+    			buffer = new ByteArray64(BYTES_IN_MEMORY);
+    		} catch(OutOfMemoryError o) {
+    			NUMBER_OF_BYTES_ALLOWED -= BYTES_IN_MEMORY / numberOfChunks;
+    		}
 
 	    	System.out.println("Pancake " + pancakeLength + ": vertexes=" + vertexes + " chunks=" + numberOfChunks + " threads=" + THREADS+ " memory usage " + (long)buffer.size / 1024 / 1024 +" MB");
 
@@ -893,6 +891,9 @@ class PancakesOneChunkManyThreads
 
     		System.out.println("LEVEL " + level + " NODES=" + currentLevelCounter);
     		nodesLeft -= currentLevelCounter;
+    		if(currentLevelCounter == 0) {
+    			throw new RuntimeException("NO NODES FOUND!");
+    		}
     	}  
     	return level;
     }
